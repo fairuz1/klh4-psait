@@ -14,10 +14,10 @@
 <body>
 
 <?php
- $id = $_GET['id'];
+ $nama = $_GET['nama'];
  $curl= curl_init();
  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
- curl_setopt($curl, CURLOPT_URL, 'http://47.88.89.199/fairuz_personal/sait_tugas_api/toserba_api.php?id='.$id.'');
+ curl_setopt($curl, CURLOPT_URL, 'http://47.88.89.199/fairuz_personal/sait_tugas_api/toserba_api.php?nama='.$nama.'');
  $res = curl_exec($curl);
  $json = json_decode($res, true);
 ?>
@@ -30,7 +30,7 @@
                     </div>
                     <p>Please fill this form and submit to add student record to the database.</p>
                     <form action="updateToserbaDo.php" method="post">
-                        <input type = "hidden" name="id" value="<?php echo"$id";?>">
+                        <!-- <input type = "hidden" name="id" value="<?php echo"$id";?>"> -->
                         <div class="form-group">
                             <label>Nama</label>
                             <input type="text" name="nama" class="form-control" value="<?php echo($json["data"][0]["nama"]); ?>">

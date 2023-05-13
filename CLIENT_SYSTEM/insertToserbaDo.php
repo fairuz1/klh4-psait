@@ -19,14 +19,39 @@
         curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
 
-        $result = curl_exec($ch);
-        $result = json_decode($result, true);
+        $resultData = curl_exec($ch);
+        $result = json_decode($resultData, true);
 
-        curl_close($ch);
-        print("<center><br>status :  {$result["status"]} "); 
-        print("<br>");
-        print("message :  {$result["message"]} "); 
-        echo "<br>Sukses terkirim ke ubuntu server !";
-        echo "<br><a href=SelectToserbaView.php> OK </a>";
+        if ($resultData) {
+            define('DB_SERVER', 'localhost');
+            define('DB_USERNAME', 'root');
+            define('DB_PASSWORD', 'password');
+            define('DB_NAME', 'sait_db');
+    
+            $mysqli = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    
+            if($mysqli){
+
+                if(!empty($_POST["nama"])){
+                    $data=$_POST;
+                } else {
+                    $data = json_decode(file_get_contents('php://input'), true);
+                }
+
+                $arrcheckpost = array('nama' => '','negara' => '','didirikan' => '','status' => '');
+                $hitung = count(array_intersect_key($data, $arrcheckpost));
+                
+                if($hitung == count($arrcheckpost)) {
+                    $result = mysqli_query($mysqli, "INSERT INTO toko SET nama = '$data[nama]', negara = '$data[negara]', didirikan = '$data[didirikan]', status = '$data[status]'"); 
+                    curl_close($ch);
+                    header("Location: selectToserbaView.php");
+                    die();  
+                }
+            }
+        } else {
+            curl_close($ch);
+            header("Location: selectToserbaView.php");
+            die();
+        }
     }
 ?>
